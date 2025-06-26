@@ -1,44 +1,111 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Кто лучший продакт?</title>
+  <meta charset="UTF-8" />
+  <title>Рулетка скидок</title>
   <style>
     body {
       font-family: sans-serif;
+      background: linear-gradient(135deg, #ff5e62, #ff9966);
+      color: white;
       text-align: center;
-      padding-top: 100px;
+      padding: 40px;
     }
+
+    .wheel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .discount {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin: 10px;
+      padding: 15px;
+      width: 150px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+
+    .discount img {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .discount span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
     button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
+      background: black;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 8px;
       cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div id="content">
-    <h1>Кто лучший продакт?</h1>
-    <button onclick="showAnswer()">Узнать</button>
+  <h1>Крути рулетку — получи скидку!</h1>
+
+  <div class="wheel" id="wheel">
+    <!-- Примеры категорий -->
+    <div class="discount" data-text="Скидка 10% на Варгеймы">
+      <img src="/mnt/data/6c83bba8-f572-4003-8ec7-f61c76d96702.png" alt="Варгеймы" />
+      <span>-10%</span>
+    </div>
+    <div class="discount" data-text="Скидка 15% на Стендовые модели">
+      <img src="/mnt/data/5bcc934d-5fa2-42a2-a40e-681ee357508c.png" alt="Стендовые модели" />
+      <span>-15%</span>
+    </div>
+    <div class="discount" data-text="Скидка 20% на Настольные игры">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/dice.png" alt="Настольные игры" />
+      <span>-20%</span>
+    </div>
+    <div class="discount" data-text="Скидка 25% на 3D-печать миниатюр">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/3d-printing.png" alt="3D миниатюры" />
+      <span>-25%</span>
+    </div>
+    <div class="discount" data-text="Скидка 10% на LEGO">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/lego.png" alt="LEGO" />
+      <span>-10%</span>
+    </div>
   </div>
 
-  <script>
-    function showAnswer() {
-      const content = document.getElementById('content');
-      content.innerHTML = `
-        <h1>Конечно же ты! Смело лей все в прод</h1>
-        <button onclick="restart()">Узнать и убедиться еще раз</button>
-      `;
-    }
+  <button onclick="spinWheel()">ВРАЩАТЬ</button>
+  <div class="result" id="result"></div>
 
-    function restart() {
-      const content = document.getElementById('content');
-      content.innerHTML = `
-        <h1>Кто лучший продакт?</h1>
-        <button onclick="showAnswer()">Узнать</button>
-      `;
+  <script>
+    function spinWheel() {
+      const discounts = document.querySelectorAll('.discount');
+      const result = document.getElementById('result');
+
+      // Сброс выделения
+      discounts.forEach(el => el.style.transform = 'scale(1)');
+
+      // Случайный выбор
+      const randomIndex = Math.floor(Math.random() * discounts.length);
+      const chosen = discounts[randomIndex];
+
+      chosen.style.transform = 'scale(1.2)';
+      result.textContent = chosen.getAttribute('data-text');
     }
   </script>
 
