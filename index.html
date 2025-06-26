@@ -1,149 +1,46 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Игра «Змейка»</title>
+  <meta charset="UTF-8">
+  <title>Кто лучший продакт?</title>
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background: #f0f0f0;
       font-family: sans-serif;
+      text-align: center;
+      padding-top: 100px;
     }
-    #gameCanvas {
-      background: #fff;
-      border: 2px solid #333;
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+  <div id="content">
+    <h1>Кто лучший продакт?</h1>
+    <button onclick="showAnswer()">Узнать</button>
+  </div>
+
   <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const gridSize = 20; // размер клетки
-    const tileCount = canvas.width / gridSize;
-
-    let snake = [{ x: 10, y: 10 }];
-    let velocity = { x: 0, y: 0 };
-    let food = randomFood();
-    let score = 0;
-
-    // Рисуем игру каждые 100 мс
-    function gameLoop() {
-      update();
-      draw();
-    }
-    setInterval(gameLoop, 100);
-
-    // Обновление состояния игры
-    function update() {
-      // Обновляем позицию змейки
-      const head = { x: snake[0].x + velocity.x, y: snake[0].y + velocity.y };
-      snake.unshift(head);
-
-      // Проверяем поедание еды
-      if (head.x === food.x && head.y === food.y) {
-        score++;
-        food = randomFood();
-      } else {
-        snake.pop();
-      }
-
-      // Проверка столкновений с границами
-      if (
-        head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount
-      ) {
-        resetGame();
-      }
-
-      // Проверка столкновений с самим собой
-      for (let i = 1; i < snake.length; i++) {
-        if (head.x === snake[i].x && head.y === snake[i].y) {
-          resetGame();
-        }
-      }
+    function showAnswer() {
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <h1>Конечно же ты!</h1>
+        <button onclick="restart()">Узнать и убедиться еще раз</button>
+      `;
     }
 
-    // Рисуем змейку, еду и счёт
-    function draw() {
-      // Фон
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Змейка
-      ctx.fillStyle = '#28a745';
-      snake.forEach(segment => {
-        ctx.fillRect(
-          segment.x * gridSize,
-          segment.y * gridSize,
-          gridSize - 1,
-          gridSize - 1
-        );
-      });
-
-      // Еда
-      ctx.fillStyle = '#dc3545';
-      ctx.fillRect(
-        food.x * gridSize,
-        food.y * gridSize,
-        gridSize - 1,
-        gridSize - 1
-      );
-
-      // Счёт
-      ctx.fillStyle = '#000';
-      ctx.font = '20px sans-serif';
-      ctx.fillText(`Счёт: ${score}`, 10, 24);
+    function restart() {
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <h1>Кто лучший продакт?</h1>
+        <button onclick="showAnswer()">Узнать</button>
+      `;
     }
-
-    // Случайная позиция еды
-    function randomFood() {
-      let newFood;
-      while (true) {
-        newFood = {
-          x: Math.floor(Math.random() * tileCount),
-          y: Math.floor(Math.random() * tileCount)
-        };
-        if (!snake.some(seg => seg.x === newFood.x && seg.y === newFood.y)) break;
-      }
-      return newFood;
-    }
-
-    // Сброс игры при проигрыше
-    function resetGame() {
-      alert(`Игра окончена! Ваш счёт: ${score}`);
-      snake = [{ x: 10, y: 10 }];
-      velocity = { x: 0, y: 0 };
-      food = randomFood();
-      score = 0;
-    }
-
-    // Управление стрелками
-    window.addEventListener('keydown', e => {
-      switch (e.key) {
-        case 'ArrowUp':
-          if (velocity.y === 1) return;
-          velocity = { x: 0, y: -1 };
-          break;
-        case 'ArrowDown':
-          if (velocity.y === -1) return;
-          velocity = { x: 0, y: 1 };
-          break;
-        case 'ArrowLeft':
-          if (velocity.x === 1) return;
-          velocity = { x: -1, y: 0 };
-          break;
-        case 'ArrowRight':
-          if (velocity.x === -1) return;
-          velocity = { x: 1, y: 0 };
-          break;
-      }
-    });
   </script>
+
 </body>
 </html>
