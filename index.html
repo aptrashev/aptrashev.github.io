@@ -415,6 +415,17 @@
             transform: translateY(-2px);
         }
 
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-buttons .cancel-button {
+            margin-top: 0;
+        }
+
         @media (max-width: 768px) {
             .cards-container {
                 grid-template-columns: 1fr;
@@ -433,7 +444,7 @@
         
         <div class="cards-container">
             <!-- Частный продавец -->
-            <div class="card" data-tariff="private">
+            <div class="card selected" data-tariff="private">
                 <div class="card-header">
                     <h2 class="card-title">Частный продавец</h2>
                     <div class="card-price free">0% комиссия</div>
@@ -600,13 +611,11 @@
                 <div class="shop-type-option" onclick="selectShopType('retail', 'Розничный магазин', '5%')">
                     <div class="shop-type-title">🏪 Розничный магазин</div>
                     <div class="shop-type-description">Продажа готовых товаров</div>
-                    <div class="shop-type-commission">Комиссия: 5%</div>
                 </div>
                 
                 <div class="shop-type-option" onclick="selectShopType('production', 'Литейная или 3D студия', '10%')">
                     <div class="shop-type-title">🏭 Литейная или 3D студия</div>
                     <div class="shop-type-description">Производство и изготовление</div>
-                    <div class="shop-type-commission">Комиссия: 10%</div>
                 </div>
             </div>
             
@@ -620,9 +629,12 @@
             <div class="success-icon">✓</div>
             <h2 class="modal-title">Тариф выбран!</h2>
             <p class="modal-message" id="modalMessage">
-                Вы успешно выбрали тариф. Нажмите ОК для подтверждения.
+                Вы успешно выбрали тариф. Подтвердите выбор или отмените.
             </p>
-            <button class="ok-button" onclick="closeModal()">ОК</button>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="cancelSelection()">Отмена</button>
+                <button class="ok-button" onclick="confirmSelection()">Подтвердить</button>
+            </div>
         </div>
     </div>
 
@@ -632,9 +644,9 @@
         function selectTariff(tariffId, tariffName) {
             selectedTariff = tariffId;
             
-            // Убираем подсветку рекомендуемого тарифа
+            // Убираем подсветку со всех карточек
             document.querySelectorAll('.card').forEach(card => {
-                card.classList.remove('recommended');
+                card.classList.remove('recommended', 'selected');
             });
             
             // Если выбран тариф "Магазин", показываем модальное окно выбора типа
@@ -657,7 +669,7 @@
             // Показываем success modal с информацией о выбранном типе
             const modal = document.getElementById('successModal');
             const modalMessage = document.getElementById('modalMessage');
-            modalMessage.textContent = `Вы выбрали тариф "Магазин" (${shopTypeName}) с комиссией ${commission}. Нажмите ОК для подтверждения.`;
+            modalMessage.textContent = `Вы выбрали тариф "Магазин" (${shopTypeName}) с комиссией ${commission}. Подтвердите выбор или отмените.`;
             modal.classList.add('show');
         }
 
@@ -666,7 +678,7 @@
             modal.classList.remove('show');
         }
 
-        function closeModal() {
+        function confirmSelection() {
             const modal = document.getElementById('successModal');
             modal.classList.remove('show');
             
@@ -685,10 +697,30 @@
             }
         }
 
+        function cancelSelection() {
+            const modal = document.getElementById('successModal');
+            modal.classList.remove('show');
+            
+            // Возвращаем подсветку к тарифу "Частный продавец"
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            const privateCard = document.querySelector('[data-tariff="private"]');
+            if (privateCard) {
+                privateCard.classList.add('selected');
+            }
+        }
+
+        function closeModal() {
+            // Эта функция больше не используется, но оставляем для совместимости
+            confirmSelection();
+        }
+
         // Закрытие модального окна по клику вне его
         document.getElementById('successModal').addEventListener('click', function(e) {
             if (e.target === this) {
-                closeModal();
+                cancelSelection();
             }
         });
 
@@ -705,7 +737,7 @@
                 const shopTypeModal = document.getElementById('shopTypeModal');
                 
                 if (successModal.classList.contains('show')) {
-                    closeModal();
+                    cancelSelection();
                 } else if (shopTypeModal.classList.contains('show')) {
                     closeShopTypeModal();
                 }
