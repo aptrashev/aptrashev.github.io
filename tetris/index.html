@@ -627,7 +627,7 @@
             <div class="warning-icon">⚠️</div>
             <h2 class="modal-title">Недоступно для тарифа "Стартер"</h2>
             <p class="modal-message">
-                Литейные мастерские и студии 3D-печати могут использовать только тариф "Магазин" с комиссией 10%.
+                Литейные мастерские и студии 3D-печати могут использовать только тариф "Магазин".
             </p>
             <p class="modal-message">
                 Тариф "Стартер" предназначен только для розничных магазинов.
@@ -739,9 +739,11 @@
             // Переключаемся на тариф "Магазин"
             selectedTariff = 'shop';
             
-            // Показываем модальное окно выбора типа магазина для тарифа "Магазин"
-            const shopTypeModal = document.getElementById('shopTypeModal');
-            shopTypeModal.classList.add('show');
+            // Сразу показываем success modal для подтверждения тарифа "Магазин" (Литейная или 3D студия)
+            const modal = document.getElementById('successModal');
+            const modalMessage = document.getElementById('modalMessage');
+            modalMessage.textContent = `Вы выбрали тариф "Магазин" (Литейная или 3D студия). Подтвердите выбор или отмените.`;
+            modal.classList.add('show');
         }
 
         function closeModal() {
