@@ -461,7 +461,7 @@
                 <div class="features">
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
-                        <span>До 5 товаров</span>
+                        <span>До 20 товаров</span>
                     </div>
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
@@ -539,7 +539,7 @@
             <div class="card" data-tariff="shop">
                 <div class="card-header">
                     <h2 class="card-title">Магазин</h2>
-                    <div class="card-price shop">Комиссия 5-10%*</div>
+                    <div class="card-price shop">Комиссия 5%</div>
                     <div class="card-description">Для розницы, мастерских и производств</div>
                 </div>
                 
@@ -588,13 +588,66 @@
                 </button>
             </div>
 
+            <!-- Производство -->
+            <div class="card" data-tariff="production">
+                <div class="card-header">
+                    <h2 class="card-title">Производство</h2>
+                    <div class="card-price production">Комиссия 10%</div>
+                    <div class="card-description">Для литейных и 3D студий</div>
+                </div>
+                
+                
+                <div class="features">
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Неограниченный срок размещения</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Объявления без срока окончания</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Импорт из Excel, ВКонтакте, Magic: The Gathering (Scryfall)</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Скидки, автотекст и промокоды</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Заметки к заказам</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Описание магазина в профиле</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Расширенная аналитика</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Специальные бейджи</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Приоритетная поддержка</span>
+                    </div>
+                </div>
+                
+                <button class="select-button production" onclick="selectTariff('production', 'Производство')">
+                    Выбрать тариф
+                </button>
+            </div>
+
         </div>
         
         <div class="commission-explanation">
-            <p><sup>*</sup> Комиссия для тарифа "Магазин" зависит от объёма продаж и специфики бизнеса:</p>
+            <p>Комиссия зависит от типа бизнеса:</p>
             <ul>
-                <li>5% — для магазинов с годовым объёмом продаж до 500 000 ₽.</li>
-                <li>10% — для литейных мастерских, студий 3D-печати, а также для магазинов с продажами более 500 000 ₽ в год.</li>
+                <li>5% — для розничных магазинов и мастерских</li>
+                <li>10% — для литейных мастерских и студий 3D-печати</li>
             </ul>
         </div>
     </div>
