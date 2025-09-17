@@ -640,10 +640,8 @@
         function selectTariff(tariffId, tariffName) {
             selectedTariff = tariffId;
             
-            // Убираем только подсветку рекомендуемого тарифа, но сохраняем текущий выбранный
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.remove('recommended');
-            });
+            // Убираем подсветку рекомендуемого тарифа только при подтверждении выбора
+            // Здесь не убираем, чтобы сохранить рекомендацию до подтверждения
             
             // Если выбран тариф "Магазин", показываем модальное окно выбора типа
             if (tariffId === 'shop') {
@@ -680,9 +678,9 @@
             
             // Подсвечиваем выбранный тариф
             if (selectedTariff) {
-                // Убираем выделение со всех карточек
+                // Убираем выделение со всех карточек (включая рекомендуемый)
                 document.querySelectorAll('.card').forEach(card => {
-                    card.classList.remove('selected');
+                    card.classList.remove('selected', 'recommended');
                 });
                 
                 // Добавляем выделение к выбранной карточке
