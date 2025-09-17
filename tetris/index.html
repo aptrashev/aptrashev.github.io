@@ -1,245 +1,789 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Тетрис</title>
-  <style>
-    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #222; }
-    canvas { background: #000; display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тарифы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #F8F8F8;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333333;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666666;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card.selected {
+            border-color: #2ECC71;
+            background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);
+        }
+
+        .card.recommended {
+            border-color: #F39C12;
+            background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+        }
+
+        .card.recommended::before {
+            content: "РЕКОМЕНДУЕМ";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #F39C12;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .card.selected::before {
+            content: "ВАШ АКТУАЛЬНЫЙ ТАРИФ";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2ECC71;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333333;
+        }
+
+        .card-price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-price.free {
+            color: #333333;
+        }
+
+        .card-price.starter {
+            color: #F39C12;
+        }
+
+        .card-price.shop {
+            color: #2ECC71;
+        }
+
+        .card-price.production {
+            color: #2ECC71;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .commission-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #CCCCCC;
+        }
+
+        .commission-item.green {
+            color: #2ECC71;
+            font-weight: bold;
+        }
+
+        .commission-item {
+            margin: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .features {
+            margin-bottom: 20px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .feature-icon {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .feature.positive .feature-icon {
+            color: #2ECC71;
+        }
+
+        .feature.negative .feature-icon {
+            color: #E74C3C;
+        }
+
+        .select-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .select-button.free {
+            background: #333333;
+            color: white;
+        }
+
+        .select-button.starter {
+            background: #F39C12;
+            color: white;
+        }
+
+        .select-button.shop {
+            background: #2ECC71;
+            color: white;
+        }
+
+        .select-button.production {
+            background: #2ECC71;
+            color: white;
+        }
+
+        .select-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .select-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.3s ease;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #2ECC71;
+            margin-bottom: 20px;
+        }
+
+        .warning-icon {
+            font-size: 4rem;
+            color: #F39C12;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .modal-message {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .ok-button {
+            background: #2ECC71;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ok-button:hover {
+            background: #27AE60;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .commission-explanation {
+            margin-top: 2rem;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #CCCCCC;
+            text-align: center;
+        }
+
+        .commission-explanation p {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .commission-explanation sup {
+            color: #2ECC71;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .commission-explanation ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .commission-explanation li {
+            font-size: 0.85rem;
+            color: #666666;
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        .commission-explanation li:before {
+            content: "• ";
+            color: #2ECC71;
+            font-weight: bold;
+        }
+
+        .shop-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .shop-type-option {
+            padding: 20px;
+            border: 2px solid #CCCCCC;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #FFFFFF;
+        }
+
+        .shop-type-option:hover {
+            border-color: #2ECC71;
+            background: #f8fff8;
+            transform: translateY(-2px);
+        }
+
+        .shop-type-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+
+        .shop-type-description {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+
+        .shop-type-commission {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2ECC71;
+        }
+
+        .cancel-button {
+            background: #666666;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .cancel-button:hover {
+            background: #555555;
+            transform: translateY(-2px);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-buttons .cancel-button {
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <canvas id="tetris" width="240" height="400"></canvas>
-  <script>
-    // Настройка канваса и контекста
-    const canvas = document.getElementById('tetris');
-    const context = canvas.getContext('2d');
-    const scale = 20;
-    const cols = canvas.width / scale;
-    const rows = canvas.height / scale;
-    context.scale(scale, scale);
+    <div class="container">
+        <h1 class="title">Тарифы для вас</h1>
+        <p class="subtitle">Не знаете, с чего начать? Попробуйте тариф Лавка — базовые PRO-возможности и сниженная комиссия всего 3%.</p>
+        
+        <div class="cards-container">
+            <!-- Частный продавец -->
+            <div class="card selected" data-tariff="private">
+                <div class="card-header">
+                    <h2 class="card-title">Частный продавец</h2>
+                    <div class="card-price free">Комиссия 0%</div>
+                    <div class="card-description">Для коллекционеров и новичков</div>
+                </div>
+                
+                
+                <div class="features">
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>До 20 товаров</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Срок размещения: 30 дней</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Стандартная поддержка</span>
+                    </div>
+                    <div class="feature negative">
+                        <span class="feature-icon">❌</span>
+                        <span>Нет массового импорта</span>
+                    </div>
+                    <div class="feature negative">
+                        <span class="feature-icon">❌</span>
+                        <span>Нет промокодов</span>
+                    </div>
+                </div>
+                
+                <button class="select-button free" onclick="selectTariff('private', 'Частный продавец')">
+                    Выбрать тариф
+                </button>
+            </div>
 
-    // Создание игрового поля
-    function createMatrix(w, h) {
-      const matrix = [];
-      while (h--) {
-        matrix.push(new Array(w).fill(0));
-      }
-      return matrix;
-    }
+            <!-- Лавка -->
+            <div class="card recommended" data-tariff="starter">
+                <div class="card-header">
+                    <h2 class="card-title">Лавка</h2>
+                    <div class="card-price starter">Комиссия 3%</div>
+                    <div class="card-description">Для растущих продавцов</div>
+                </div>
+                
+                
+                <div class="features">
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>До 50 товаров</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Неограниченный срок размещения</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Импорт из Excel</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Управление количеством</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Базовая аналитика</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Стандартная поддержка</span>
+                    </div>
+                    <div class="feature negative">
+                        <span class="feature-icon">❌</span>
+                        <span>Нет промокодов</span>
+                    </div>
+                    <div class="feature negative">
+                        <span class="feature-icon">❌</span>
+                        <span>Нет интеграций</span>
+                    </div>
+                </div>
+                
+                <button class="select-button starter" onclick="selectTariff('starter', 'Лавка')">
+                    Выбрать тариф
+                </button>
+            </div>
 
-    // Обновление — очистка заполненных линий
-    function arenaSweep() {
-      outer: for (let y = rows - 1; y > 0; --y) {
-        for (let x = 0; x < cols; ++x) {
-          if (arena[y][x] === 0) {
-            continue outer;
-          }
+            <!-- Магазин -->
+            <div class="card" data-tariff="shop">
+                <div class="card-header">
+                    <h2 class="card-title">Магазин</h2>
+                    <div class="card-price shop">Комиссия 5-10%*</div>
+                    <div class="card-description">Для розницы, мастерских и производств</div>
+                </div>
+                
+                
+                <div class="features">
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Неограниченный срок размещения</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Объявления без срока окончания</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Импорт из Excel, ВКонтакте, Magic: The Gathering (Scryfall)</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Скидки, автотекст и промокоды</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Заметки к заказам</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Описание магазина в профиле</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Расширенная аналитика</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Специальные бейджи</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Приоритетная поддержка</span>
+                    </div>
+                </div>
+                
+                <button class="select-button shop" onclick="selectTariff('shop', 'Магазин')">
+                    Выбрать тариф
+                </button>
+            </div>
+
+        </div>
+        
+        <div class="commission-explanation">
+            <p><sup>*</sup> Комиссия для тарифа "Магазин" зависит от объёма продаж и специфики бизнеса:</p>
+            <ul>
+                <li>5% — для магазинов с годовым объёмом продаж до 500 000 ₽.</li>
+                <li>10% — для литейных мастерских, студий 3D-печати, а также для магазинов с продажами более 500 000 ₽ в год.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Shop Type Selection Modal -->
+    <div id="shopTypeModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Выберите тип магазина</h2>
+            <p class="modal-message">Укажите тип вашего бизнеса для определения комиссии:</p>
+            
+            <div class="shop-type-options">
+                <div class="shop-type-option" onclick="selectShopType('retail', 'Розничный магазин', '5%')">
+                    <div class="shop-type-title">🏪 Розничный магазин</div>
+                    <div class="shop-type-description">Продажа готовых товаров</div>
+                </div>
+                
+                <div class="shop-type-option" onclick="selectShopType('production', 'Литейная или 3D студия', '10%')">
+                    <div class="shop-type-title">🏭 Литейная или 3D студия</div>
+                    <div class="shop-type-description">Производство и изготовление</div>
+                </div>
+            </div>
+            
+            <button class="cancel-button" onclick="closeShopTypeModal()">Отмена</button>
+        </div>
+    </div>
+
+    <!-- Production Warning Modal -->
+    <div id="productionWarningModal" class="modal">
+        <div class="modal-content">
+            <div class="warning-icon">⚠️</div>
+            <h2 class="modal-title">Недоступно для тарифа "Стартер"</h2>
+            <p class="modal-message">
+                Литейные мастерские и студии 3D-печати могут использовать только тариф "Магазин" с комиссией 10%.
+            </p>
+            <p class="modal-message">
+                Тариф "Стартер" предназначен только для розничных магазинов.
+            </p>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeProductionWarning()">Отмена</button>
+                <button class="ok-button" onclick="switchToShopTariff()">Выбрать тариф "Магазин"</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-icon">✓</div>
+            <h2 class="modal-title">Тариф выбран!</h2>
+            <p class="modal-message" id="modalMessage">
+                Вы успешно выбрали тариф. Подтвердите выбор или отмените.
+            </p>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="cancelSelection()">Отмена</button>
+                <button class="ok-button" onclick="confirmSelection()">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTariff = null;
+
+        function selectTariff(tariffId, tariffName) {
+            selectedTariff = tariffId;
+            
+            // Убираем подсветку рекомендуемого тарифа только при подтверждении выбора
+            // Здесь не убираем, чтобы сохранить рекомендацию до подтверждения
+            
+            // Если выбран тариф "Магазин" или "Стартер", показываем модальное окно выбора типа
+            if (tariffId === 'shop' || tariffId === 'starter') {
+                const shopTypeModal = document.getElementById('shopTypeModal');
+                shopTypeModal.classList.add('show');
+            } else {
+                // Для других тарифов показываем обычное success modal
+                const modal = document.getElementById('successModal');
+                const modalMessage = document.getElementById('modalMessage');
+                modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Подтвердите выбор или отмените.`;
+                modal.classList.add('show');
+            }
         }
-        const row = arena.splice(y, 1)[0].fill(0);
-        arena.unshift(row);
-        ++y;
-      }
-    }
 
-    // Создание фигур
-    function createPiece(type) {
-      if (type === 'T') {
-        return [
-          [0, 0, 0],
-          [1, 1, 1],
-          [0, 1, 0],
-        ];
-      } else if (type === 'O') {
-        return [
-          [2, 2],
-          [2, 2],
-        ];
-      } else if (type === 'L') {
-        return [
-          [0, 3, 0],
-          [0, 3, 0],
-          [0, 3, 3],
-        ];
-      } else if (type === 'J') {
-        return [
-          [0, 4, 0],
-          [0, 4, 0],
-          [4, 4, 0],
-        ];
-      } else if (type === 'I') {
-        return [
-          [0, 5, 0, 0],
-          [0, 5, 0, 0],
-          [0, 5, 0, 0],
-          [0, 5, 0, 0],
-        ];
-      } else if (type === 'S') {
-        return [
-          [0, 6, 6],
-          [6, 6, 0],
-          [0, 0, 0],
-        ];
-      } else if (type === 'Z') {
-        return [
-          [7, 7, 0],
-          [0, 7, 7],
-          [0, 0, 0],
-        ];
-      }
-    }
+        function selectShopType(shopType, shopTypeName, commission) {
+            // Закрываем модальное окно выбора типа магазина
+            closeShopTypeModal();
+            
+            // Проверяем, если выбран тариф "Стартер" и тип "Литейная или 3D студия"
+            if (selectedTariff === 'starter' && shopType === 'production') {
+                // Показываем специальное модальное окно с предупреждением
+                const modal = document.getElementById('productionWarningModal');
+                modal.classList.add('show');
+            } else {
+                // Показываем обычный success modal
+                const modal = document.getElementById('successModal');
+                const modalMessage = document.getElementById('modalMessage');
+                const tariffName = selectedTariff === 'starter' ? 'Стартер' : 'Магазин';
+                modalMessage.textContent = `Вы выбрали тариф "${tariffName}" (${shopTypeName}). Подтвердите выбор или отмените.`;
+                modal.classList.add('show');
+            }
+        }
 
-    // Отрисовка матрицы и фигур
-    function drawMatrix(matrix, offset) {
-      matrix.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (value !== 0) {
-            context.fillStyle = colors[value];
-            context.fillRect(x + offset.x, y + offset.y, 1, 1);
-          }
+        function closeShopTypeModal() {
+            const modal = document.getElementById('shopTypeModal');
+            modal.classList.remove('show');
+        }
+
+        function confirmSelection() {
+            const modal = document.getElementById('successModal');
+            modal.classList.remove('show');
+            
+            // Подсвечиваем выбранный тариф
+            if (selectedTariff) {
+                // Убираем выделение со всех карточек (включая рекомендуемый)
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.remove('selected', 'recommended');
+                });
+                
+                // Добавляем выделение к выбранной карточке
+                const selectedCard = document.querySelector(`[data-tariff="${selectedTariff}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected');
+                }
+            }
+        }
+
+        function cancelSelection() {
+            const modal = document.getElementById('successModal');
+            modal.classList.remove('show');
+            
+            // Не меняем подсветку текущего тарифа - оставляем как есть
+            // Пользователь просто отменяет выбор нового тарифа
+        }
+
+        function closeProductionWarning() {
+            const modal = document.getElementById('productionWarningModal');
+            modal.classList.remove('show');
+        }
+
+        function switchToShopTariff() {
+            // Закрываем модальное окно предупреждения
+            closeProductionWarning();
+            
+            // Переключаемся на тариф "Магазин"
+            selectedTariff = 'shop';
+            
+            // Показываем модальное окно выбора типа магазина для тарифа "Магазин"
+            const shopTypeModal = document.getElementById('shopTypeModal');
+            shopTypeModal.classList.add('show');
+        }
+
+        function closeModal() {
+            // Эта функция больше не используется, но оставляем для совместимости
+            confirmSelection();
+        }
+
+        // Закрытие модального окна по клику вне его
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelSelection();
+            }
         });
-      });
-    }
 
-    function draw() {
-      context.fillStyle = '#000';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      drawMatrix(arena, { x: 0, y: 0 });
-      drawMatrix(player.matrix, player.pos);
-    }
-
-    // Проверка на столкновение
-    function collide(arena, player) {
-      const [m, o] = [player.matrix, player.pos];
-      for (let y = 0; y < m.length; ++y) {
-        for (let x = 0; x < m[y].length; ++x) {
-          if (m[y][x] !== 0 &&
-             (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    // Сливание фигур с полем
-    function merge(arena, player) {
-      player.matrix.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (value !== 0) {
-            arena[y + player.pos.y][x + player.pos.x] = value;
-          }
+        document.getElementById('shopTypeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeShopTypeModal();
+            }
         });
-      });
-    }
 
-    // Движение и сброс фигур
-    function playerDrop() {
-      player.pos.y++;
-      if (collide(arena, player)) {
-        player.pos.y--;
-        merge(arena, player);
-        playerReset();
-        arenaSweep();
-      }
-      dropCounter = 0;
-    }
+        document.getElementById('productionWarningModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProductionWarning();
+            }
+        });
 
-    function playerMove(dir) {
-      player.pos.x += dir;
-      if (collide(arena, player)) {
-        player.pos.x -= dir;
-      }
-    }
-
-    // Сброс после посадки или при старте
-    function playerReset() {
-      const pieces = 'ILJOTSZ';
-      player.matrix = createPiece(pieces[(pieces.length * Math.random()) | 0]);
-      player.pos.y = 0;
-      player.pos.x = (cols / 2 | 0) - (player.matrix[0].length / 2 | 0);
-      if (collide(arena, player)) {
-        arena.forEach(row => row.fill(0));
-      }
-    }
-
-    // Вращение фигур
-    function rotate(matrix, dir) {
-      for (let y = 0; y < matrix.length; ++y) {
-        for (let x = 0; x < y; ++x) {
-          [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-        }
-      }
-      if (dir > 0) {
-        matrix.forEach(row => row.reverse());
-      } else {
-        matrix.reverse();
-      }
-    }
-
-    function playerRotate(dir) {
-      const pos = player.pos.x;
-      let offset = 1;
-      rotate(player.matrix, dir);
-      while (collide(arena, player)) {
-        player.pos.x += offset;
-        offset = -(offset + (offset > 0 ? 1 : -1));
-        if (offset > player.matrix[0].length) {
-          rotate(player.matrix, -dir);
-          player.pos.x = pos;
-          return;
-        }
-      }
-    }
-
-    // Игровой цикл
-    let dropCounter = 0;
-    let dropInterval = 1000;
-    let lastTime = 0;
-
-    function update(time = 0) {
-      const deltaTime = time - lastTime;
-      lastTime = time;
-      dropCounter += deltaTime;
-      if (dropCounter > dropInterval) {
-        playerDrop();
-      }
-      draw();
-      requestAnimationFrame(update);
-    }
-
-    // Цвета для фигур
-    const colors = [
-      null,
-      '#FF0D72',
-      '#0DC2FF',
-      '#0DFF72',
-      '#F538FF',
-      '#FF8E0D',
-      '#FFE138',
-      '#3877FF',
-    ];
-
-    // Инициализация
-    const arena = createMatrix(cols, rows);
-    const player = { pos: { x: 0, y: 0 }, matrix: null };
-
-    document.addEventListener('keydown', event => {
-      if (event.keyCode === 37) {
-        playerMove(-1);
-      } else if (event.keyCode === 39) {
-        playerMove(1);
-      } else if (event.keyCode === 40) {
-        playerDrop();
-      } else if (event.keyCode === 81) {
-        playerRotate(-1);
-      } else if (event.keyCode === 87) {
-        playerRotate(1);
-      }
-    });
-
-    playerReset();
-    update();
-  </script>
+        // Закрытие модального окна по клавише Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const successModal = document.getElementById('successModal');
+                const shopTypeModal = document.getElementById('shopTypeModal');
+                const productionWarningModal = document.getElementById('productionWarningModal');
+                
+                if (successModal.classList.contains('show')) {
+                    cancelSelection();
+                } else if (shopTypeModal.classList.contains('show')) {
+                    closeShopTypeModal();
+                } else if (productionWarningModal.classList.contains('show')) {
+                    closeProductionWarning();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
