@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #F8F8F8;
             padding: 20px;
             min-height: 100vh;
         }
@@ -27,8 +27,18 @@
             text-align: center;
             font-size: 2.5rem;
             font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333333;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666666;
             margin-bottom: 2rem;
-            color: #333;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .cards-container {
@@ -39,7 +49,7 @@
         }
 
         .card {
-            background: white;
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -47,6 +57,8 @@
             cursor: pointer;
             border: 2px solid transparent;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
@@ -55,8 +67,28 @@
         }
 
         .card.selected {
-            border-color: #4CAF50;
+            border-color: #2ECC71;
             background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);
+        }
+
+        .card.recommended {
+            border-color: #F39C12;
+            background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+        }
+
+        .card.recommended::before {
+            content: "РЕКОМЕНДУЕМ";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #F39C12;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
         }
 
         .card.selected::before {
@@ -65,7 +97,7 @@
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: #4CAF50;
+            background: #2ECC71;
             color: white;
             padding: 6px 16px;
             border-radius: 20px;
@@ -83,7 +115,7 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 8px;
-            color: #333;
+            color: #333333;
         }
 
         .card-price {
@@ -93,24 +125,24 @@
         }
 
         .card-price.free {
-            color: #4CAF50;
+            color: #333333;
         }
 
         .card-price.starter {
-            color: #2196F3;
+            color: #F39C12;
         }
 
         .card-price.shop {
-            color: #FF9800;
+            color: #2ECC71;
         }
 
         .card-price.production {
-            color: #9C27B0;
+            color: #2ECC71;
         }
 
         .card-description {
             font-size: 0.9rem;
-            color: #666;
+            color: #666666;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -121,6 +153,12 @@
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            border: 1px solid #CCCCCC;
+        }
+
+        .commission-item.green {
+            color: #2ECC71;
+            font-weight: bold;
         }
 
         .commission-item {
@@ -145,11 +183,11 @@
         }
 
         .feature.positive .feature-icon {
-            color: #4CAF50;
+            color: #2ECC71;
         }
 
         .feature.negative .feature-icon {
-            color: #f44336;
+            color: #E74C3C;
         }
 
         .select-button {
@@ -161,25 +199,26 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: auto;
         }
 
         .select-button.free {
-            background: #4CAF50;
+            background: #333333;
             color: white;
         }
 
         .select-button.starter {
-            background: #2196F3;
+            background: #F39C12;
             color: white;
         }
 
         .select-button.shop {
-            background: #FF9800;
+            background: #2ECC71;
             color: white;
         }
 
         .select-button.production {
-            background: #9C27B0;
+            background: #2ECC71;
             color: white;
         }
 
@@ -225,7 +264,7 @@
 
         .success-icon {
             font-size: 4rem;
-            color: #4CAF50;
+            color: #2ECC71;
             margin-bottom: 20px;
         }
 
@@ -244,7 +283,7 @@
         }
 
         .ok-button {
-            background: #4CAF50;
+            background: #2ECC71;
             color: white;
             border: none;
             padding: 12px 30px;
@@ -256,7 +295,7 @@
         }
 
         .ok-button:hover {
-            background: #45a049;
+            background: #27AE60;
             transform: translateY(-2px);
         }
 
@@ -289,14 +328,15 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="title">Выберите тариф</h1>
+        <h1 class="title">Тарифы для вас</h1>
+        <p class="subtitle">Не знаете, с чего начать? Попробуйте тариф Стартер — базовые PRO-возможности и сниженная комиссия всего 3%.</p>
         
         <div class="cards-container">
             <!-- Частный продавец -->
             <div class="card" data-tariff="private">
                 <div class="card-header">
                     <h2 class="card-title">Частный продавец</h2>
-                    <div class="card-price free">БЕСПЛАТНО</div>
+                    <div class="card-price free">0% комиссия</div>
                     <div class="card-description">Для коллекционеров и новичков</div>
                 </div>
                 
@@ -342,7 +382,7 @@
             </div>
 
             <!-- Стартер -->
-            <div class="card" data-tariff="starter">
+            <div class="card recommended" data-tariff="starter">
                 <div class="card-header">
                     <h2 class="card-title">Стартер</h2>
                     <div class="card-price starter">3% комиссия</div>
@@ -350,7 +390,7 @@
                 </div>
                 
                 <div class="commission-info">
-                    <div class="commission-item">💰 Продажа товаров: 3%</div>
+                    <div class="commission-item green">💰 Продажа товаров: 3%</div>
                     <div class="commission-item">🏷 Аукционы: 5%</div>
                 </div>
                 
@@ -403,7 +443,7 @@
                 </div>
                 
                 <div class="commission-info">
-                    <div class="commission-item">💰 Продажа товаров: 5%</div>
+                    <div class="commission-item green">💰 Продажа товаров: 5%</div>
                     <div class="commission-item">🏷 Аукционы: 5%</div>
                 </div>
                 
@@ -456,14 +496,42 @@
                 </div>
                 
                 <div class="commission-info">
-                    <div class="commission-item">💰 Продажа товаров: 10%</div>
-                    <div class="commission-item">🏷 Аукционы: 10%</div>
+                    <div class="commission-item green">💰 Продажа товаров: 10%</div>
+                    <div class="commission-item green">🏷 Аукционы: 10%</div>
                 </div>
                 
                 <div class="features">
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
-                        <span>Всё из тарифа «Магазин»</span>
+                        <span>Неограниченные товары</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Неограниченный срок размещения</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Импорт из Excel, ВКонтакте, Magic: The Gathering</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Скидки и автотекст</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Заметки к заказам</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Описание магазина в профиле</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Расширенная аналитика</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Приоритетная поддержка</span>
                     </div>
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
@@ -515,6 +583,11 @@
 
         function selectTariff(tariffId, tariffName) {
             selectedTariff = tariffId;
+            
+            // Убираем подсветку рекомендуемого тарифа
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('recommended');
+            });
             
             // Показываем success modal
             const modal = document.getElementById('successModal');
