@@ -625,12 +625,12 @@
     <div id="productionWarningModal" class="modal">
         <div class="modal-content">
             <div class="warning-icon">⚠️</div>
-            <h2 class="modal-title">Недоступно для тарифа "Стартер"</h2>
+            <h2 class="modal-title">Недоступно для тарифа "Лавка"</h2>
             <p class="modal-message">
                 Литейные мастерские и студии 3D-печати могут использовать только тариф "Магазин".
             </p>
             <p class="modal-message">
-                Тариф "Стартер" предназначен только для розничных магазинов.
+                Тариф "Лавка" предназначен только для розничных магазинов.
             </p>
             <div class="modal-buttons">
                 <button class="cancel-button" onclick="closeProductionWarning()">Отмена</button>
@@ -663,7 +663,7 @@
             // Убираем подсветку рекомендуемого тарифа только при подтверждении выбора
             // Здесь не убираем, чтобы сохранить рекомендацию до подтверждения
             
-            // Если выбран тариф "Магазин" или "Стартер", показываем модальное окно выбора типа
+            // Если выбран тариф "Магазин" или "Лавка", показываем модальное окно выбора типа
             if (tariffId === 'shop' || tariffId === 'starter') {
                 const shopTypeModal = document.getElementById('shopTypeModal');
                 shopTypeModal.classList.add('show');
@@ -680,7 +680,7 @@
             // Закрываем модальное окно выбора типа магазина
             closeShopTypeModal();
             
-            // Проверяем, если выбран тариф "Стартер" и тип "Литейная или 3D студия"
+            // Проверяем, если выбран тариф "Лавка" и тип "Литейная или 3D студия"
             if (selectedTariff === 'starter' && shopType === 'production') {
                 // Показываем специальное модальное окно с предупреждением
                 const modal = document.getElementById('productionWarningModal');
@@ -689,7 +689,7 @@
                 // Показываем обычный success modal
                 const modal = document.getElementById('successModal');
                 const modalMessage = document.getElementById('modalMessage');
-                const tariffName = selectedTariff === 'starter' ? 'Стартер' : 'Магазин';
+                const tariffName = selectedTariff === 'starter' ? 'Лавка' : 'Магазин';
                 modalMessage.textContent = `Вы выбрали тариф "${tariffName}" (${shopTypeName}). Подтвердите выбор или отмените.`;
                 modal.classList.add('show');
             }
