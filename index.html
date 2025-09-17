@@ -315,6 +315,100 @@
             }
         }
 
+        .commission-explanation {
+            margin-top: 2rem;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #CCCCCC;
+            text-align: center;
+        }
+
+        .commission-explanation p {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .commission-explanation ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .commission-explanation li {
+            font-size: 0.85rem;
+            color: #666666;
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        .commission-explanation li:before {
+            content: "• ";
+            color: #2ECC71;
+            font-weight: bold;
+        }
+
+        .shop-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .shop-type-option {
+            padding: 20px;
+            border: 2px solid #CCCCCC;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #FFFFFF;
+        }
+
+        .shop-type-option:hover {
+            border-color: #2ECC71;
+            background: #f8fff8;
+            transform: translateY(-2px);
+        }
+
+        .shop-type-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+
+        .shop-type-description {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+
+        .shop-type-commission {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2ECC71;
+        }
+
+        .cancel-button {
+            background: #666666;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .cancel-button:hover {
+            background: #555555;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .cards-container {
                 grid-template-columns: 1fr;
@@ -430,27 +524,27 @@
             <div class="card" data-tariff="shop">
                 <div class="card-header">
                     <h2 class="card-title">Магазин</h2>
-                    <div class="card-price shop">5% комиссия</div>
-                    <div class="card-description">Для розницы и мастерских</div>
+                    <div class="card-price shop">5-10% комиссия*</div>
+                    <div class="card-description">Для розницы, мастерских и производств</div>
                 </div>
                 
                 
                 <div class="features">
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
-                        <span>Неограниченные товары</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
                         <span>Неограниченный срок размещения</span>
                     </div>
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
-                        <span>Импорт из Excel, ВКонтакте, Magic: The Gathering</span>
+                        <span>Объявления без срока окончания</span>
                     </div>
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
-                        <span>Скидки и автотекст</span>
+                        <span>Импорт из Excel, ВКонтакте, Magic: The Gathering (Scryfall)</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Скидки, автотекст и промокоды</span>
                     </div>
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
@@ -463,6 +557,10 @@
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
                         <span>Расширенная аналитика</span>
+                    </div>
+                    <div class="feature positive">
+                        <span class="feature-icon">✅</span>
+                        <span>Специальные бейджи</span>
                     </div>
                     <div class="feature positive">
                         <span class="feature-icon">✅</span>
@@ -475,78 +573,38 @@
                 </button>
             </div>
 
-            <!-- Производство -->
-            <div class="card" data-tariff="production">
-                <div class="card-header">
-                    <h2 class="card-title">Производство</h2>
-                    <div class="card-price production">10% комиссия</div>
-                    <div class="card-description">Для литейных и 3D студий</div>
+        </div>
+        
+        <div class="commission-explanation">
+            <p>Комиссия зависит от объёма продаж и специфики бизнеса:</p>
+            <ul>
+                <li>5% — для магазинов с годовым объёмом продаж до 500 000 ₽.</li>
+                <li>10% — для литейных мастерских, студий 3D-печати, а также для магазинов с продажами более 500 000 ₽ в год.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Shop Type Selection Modal -->
+    <div id="shopTypeModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Выберите тип магазина</h2>
+            <p class="modal-message">Укажите тип вашего бизнеса для определения комиссии:</p>
+            
+            <div class="shop-type-options">
+                <div class="shop-type-option" onclick="selectShopType('retail', 'Розничный магазин', '5%')">
+                    <div class="shop-type-title">🏪 Розничный магазин</div>
+                    <div class="shop-type-description">Продажа готовых товаров</div>
+                    <div class="shop-type-commission">Комиссия: 5%</div>
                 </div>
                 
-                
-                <div class="features">
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Неограниченные товары</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Неограниченный срок размещения</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Импорт из Excel, ВКонтакте, Magic: The Gathering</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Скидки и автотекст</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Заметки к заказам</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Описание магазина в профиле</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Расширенная аналитика</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Приоритетная поддержка</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Создание промокодов</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Интеграции с внешними системами</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Персональный менеджер</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Расширенные отчёты</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Приоритет в поиске</span>
-                    </div>
-                    <div class="feature positive">
-                        <span class="feature-icon">✅</span>
-                        <span>Специальные бейджи</span>
-                    </div>
+                <div class="shop-type-option" onclick="selectShopType('production', 'Литейная или 3D студия', '10%')">
+                    <div class="shop-type-title">🏭 Литейная или 3D студия</div>
+                    <div class="shop-type-description">Производство и изготовление</div>
+                    <div class="shop-type-commission">Комиссия: 10%</div>
                 </div>
-                
-                <button class="select-button production" onclick="selectTariff('production', 'Производство')">
-                    Выбрать тариф
-                </button>
             </div>
+            
+            <button class="cancel-button" onclick="closeShopTypeModal()">Отмена</button>
         </div>
     </div>
 
@@ -573,11 +631,33 @@
                 card.classList.remove('recommended');
             });
             
-            // Показываем success modal
+            // Если выбран тариф "Магазин", показываем модальное окно выбора типа
+            if (tariffId === 'shop') {
+                const shopTypeModal = document.getElementById('shopTypeModal');
+                shopTypeModal.classList.add('show');
+            } else {
+                // Для других тарифов показываем обычное success modal
+                const modal = document.getElementById('successModal');
+                const modalMessage = document.getElementById('modalMessage');
+                modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Нажмите ОК для подтверждения.`;
+                modal.classList.add('show');
+            }
+        }
+
+        function selectShopType(shopType, shopTypeName, commission) {
+            // Закрываем модальное окно выбора типа магазина
+            closeShopTypeModal();
+            
+            // Показываем success modal с информацией о выбранном типе
             const modal = document.getElementById('successModal');
             const modalMessage = document.getElementById('modalMessage');
-            modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Нажмите ОК для подтверждения.`;
+            modalMessage.textContent = `Вы выбрали тариф "Магазин" (${shopTypeName}) с комиссией ${commission}. Нажмите ОК для подтверждения.`;
             modal.classList.add('show');
+        }
+
+        function closeShopTypeModal() {
+            const modal = document.getElementById('shopTypeModal');
+            modal.classList.remove('show');
         }
 
         function closeModal() {
@@ -606,12 +686,22 @@
             }
         });
 
+        document.getElementById('shopTypeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeShopTypeModal();
+            }
+        });
+
         // Закрытие модального окна по клавише Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                const modal = document.getElementById('successModal');
-                if (modal.classList.contains('show')) {
+                const successModal = document.getElementById('successModal');
+                const shopTypeModal = document.getElementById('shopTypeModal');
+                
+                if (successModal.classList.contains('show')) {
                     closeModal();
+                } else if (shopTypeModal.classList.contains('show')) {
+                    closeShopTypeModal();
                 }
             }
         });
