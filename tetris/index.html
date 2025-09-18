@@ -327,46 +327,6 @@
             }
         }
 
-        .commission-explanation {
-            margin-top: 2rem;
-            padding: 1.25rem;
-            background: #f8f9fa;
-            border-radius: 0.5rem;
-            border: 0.0625rem solid #CCCCCC;
-            text-align: center;
-        }
-
-        .commission-explanation p {
-            font-size: 0.9rem;
-            color: #666666;
-            margin-bottom: 0.625rem;
-            font-weight: 500;
-        }
-
-        .commission-explanation sup {
-            color: #2ECC71;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .commission-explanation ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .commission-explanation li {
-            font-size: 0.85rem;
-            color: #666666;
-            margin: 0.3125rem 0;
-            line-height: 1.4;
-        }
-
-        .commission-explanation li:before {
-            content: "• ";
-            color: #2ECC71;
-            font-weight: bold;
-        }
 
         .downgrade-info {
             margin-top: 2rem;
@@ -486,10 +446,10 @@
         <p class="subtitle">Не знаете, с чего начать? Попробуйте тариф Лавка — базовые PRO-возможности и сниженная комиссия всего 3%.</p>
         
         <div class="cards-container">
-            <!-- Частный продавец -->
+            <!-- Торговец -->
             <div class="card selected" data-tariff="private">
                 <div class="card-header">
-                    <h2 class="card-title">Частный продавец</h2>
+                    <h2 class="card-title">Торговец</h2>
                     <div class="card-price free">Комиссия 0%</div>
                     <div class="card-description">Для коллекционеров и новичков</div>
                 </div>
@@ -680,14 +640,6 @@
 
         </div>
         
-        <div class="commission-explanation">
-            <p>Комиссия зависит от типа бизнеса:</p>
-            <ul>
-                <li>5% — для розничных магазинов и мастерских</li>
-                <li>10% — для литейных мастерских и студий 3D-печати</li>
-            </ul>
-        </div>
-        
         <div class="downgrade-info" id="downgradeInfo" style="display: none;">
             <p>Для перехода на обычный аккаунт, напишите пожалуйста нам на адрес <a href="mailto:admin@minifreemarket.com">admin@minifreemarket.com</a></p>
         </div>
@@ -735,13 +687,14 @@
             </p>
             <div class="modal-buttons">
                 <button class="cancel-button" onclick="cancelSelection()">Отмена</button>
-                <button class="ok-button" onclick="confirmSelection()">Подтвердить</button>
+                <button class="ok-button" id="confirmButton" onclick="confirmSelection()">Подтвердить</button>
             </div>
         </div>
     </div>
 
     <script>
         let selectedTariff = null;
+        let isAlreadyActiveTariff = false;
 
         function selectTariff(tariffId, tariffName) {
             // Проверяем, не заблокирован ли тариф
@@ -749,6 +702,22 @@
             if (card && card.classList.contains('blocked')) {
                 return; // Не позволяем выбрать заблокированный тариф
             }
+            
+            // Проверяем, не является ли этот тариф уже активным
+            if (card && card.classList.contains('selected')) {
+                // Если тариф уже активен, показываем соответствующее сообщение
+                isAlreadyActiveTariff = true;
+                const modal = document.getElementById('successModal');
+                const modalMessage = document.getElementById('modalMessage');
+                const confirmButton = document.getElementById('confirmButton');
+                modalMessage.textContent = `Тариф "${tariffName}" уже является вашим актуальным тарифом.`;
+                confirmButton.textContent = 'ОК';
+                modal.classList.add('show');
+                return;
+            }
+            
+            // Сбрасываем флаг для нового выбора
+            isAlreadyActiveTariff = false;
             
             selectedTariff = tariffId;
             
@@ -762,7 +731,9 @@
                 // Для других тарифов показываем обычное success modal
                 const modal = document.getElementById('successModal');
                 const modalMessage = document.getElementById('modalMessage');
+                const confirmButton = document.getElementById('confirmButton');
                 modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Подтвердите выбор или отмените.`;
+                confirmButton.textContent = 'Подтвердить';
                 modal.classList.add('show');
             }
         }
@@ -841,6 +812,12 @@
             const modal = document.getElementById('successModal');
             modal.classList.remove('show');
             
+            // Если это уже активный тариф, просто закрываем модальное окно
+            if (isAlreadyActiveTariff) {
+                isAlreadyActiveTariff = false;
+                return;
+            }
+            
             // Подсвечиваем выбранный тариф
             if (selectedTariff) {
                 // Убираем выделение со всех карточек (включая рекомендуемый)
@@ -863,6 +840,9 @@
             const modal = document.getElementById('successModal');
             modal.classList.remove('show');
             
+            // Сбрасываем флаг
+            isAlreadyActiveTariff = false;
+            
             // Проверяем, есть ли активный тариф (выбранный ранее)
             const activeCard = document.querySelector('.card.selected');
             if (activeCard) {
@@ -871,7 +851,7 @@
                 if (activeTariff && activeTariff !== 'private') {
                     blockOtherTariffs(activeTariff);
                 } else {
-                    // Если активен тариф "Частный продавец", убираем блокировку
+                    // Если активен тариф "Торговец", убираем блокировку
                     document.querySelectorAll('.card').forEach(card => {
                         card.classList.remove('blocked');
                     });
