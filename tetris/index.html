@@ -941,7 +941,12 @@
         }
 
         function updateButtonTexts(activeTariff) {
-            // Обновляем текст кнопок для доступных тарифов
+            // Сначала сбрасываем все кнопки на "Выбрать тариф"
+            document.querySelectorAll('.select-button').forEach(button => {
+                button.textContent = 'Выбрать тариф';
+            });
+            
+            // Затем обновляем кнопки для доступных тарифов
             if (activeTariff === 'starter') {
                 // Для тарифа "Лавка" доступны "Лавка" и "Магазин"
                 const starterCard = document.querySelector('[data-tariff="starter"]');
@@ -956,7 +961,7 @@
                 if (shopCard) {
                     const button = shopCard.querySelector('.select-button');
                     if (button) {
-                        button.textContent = 'Изменить тип магазина';
+                        button.textContent = 'Выбрать тариф';
                     }
                 }
             } else if (activeTariff === 'shop') {
