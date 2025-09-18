@@ -485,7 +485,7 @@
             <!-- Частный продавец -->
             <div class="card selected" data-tariff="private">
                 <div class="card-header">
-                    <h2 class="card-title">Частный продавец</h2>
+                    <h2 class="card-title">Торговец</h2>
                     <div class="card-price free">Комиссия 0%</div>
                     <div class="card-description">Для коллекционеров и новичков</div>
                 </div>
@@ -686,7 +686,6 @@
     <div id="shopTypeModal" class="modal">
         <div class="modal-content">
             <h2 class="modal-title">Выберите тип магазина</h2>
-            <p class="modal-message">Укажите тип вашего бизнеса для определения комиссии:</p>
             
             <div class="shop-type-options" id="shopTypeOptions">
                 <!-- Опции будут добавлены динамически -->
@@ -862,6 +861,8 @@
                 });
                 // Показываем информацию о переходе
                 downgradeInfo.style.display = 'block';
+                // Обновляем текст кнопок
+                updateButtonTexts(activeTariff);
             } else if (activeTariff === 'shop') {
                 // Если выбран тариф "Магазин", блокируем все остальные
                 document.querySelectorAll('.card').forEach(card => {
@@ -872,6 +873,8 @@
                 });
                 // Показываем информацию о переходе
                 downgradeInfo.style.display = 'block';
+                // Обновляем текст кнопок
+                updateButtonTexts(activeTariff);
             } else if (activeTariff === 'production') {
                 // Если выбран тариф "Производство", блокируем все остальные
                 document.querySelectorAll('.card').forEach(card => {
@@ -882,6 +885,40 @@
                 });
                 // Показываем информацию о переходе
                 downgradeInfo.style.display = 'block';
+                // Обновляем текст кнопок
+                updateButtonTexts(activeTariff);
+            }
+        }
+
+        function updateButtonTexts(activeTariff) {
+            // Обновляем текст кнопок для доступных тарифов
+            if (activeTariff === 'starter') {
+                // Для тарифа "Лавка" доступен только "Магазин"
+                const shopCard = document.querySelector('[data-tariff="shop"]');
+                if (shopCard) {
+                    const button = shopCard.querySelector('.select-button');
+                    if (button) {
+                        button.textContent = 'Изменить тип магазина';
+                    }
+                }
+            } else if (activeTariff === 'shop') {
+                // Для тарифа "Магазин" доступен только он сам
+                const shopCard = document.querySelector('[data-tariff="shop"]');
+                if (shopCard) {
+                    const button = shopCard.querySelector('.select-button');
+                    if (button) {
+                        button.textContent = 'Изменить тип магазина';
+                    }
+                }
+            } else if (activeTariff === 'production') {
+                // Для тарифа "Производство" доступен только он сам
+                const productionCard = document.querySelector('[data-tariff="production"]');
+                if (productionCard) {
+                    const button = productionCard.querySelector('.select-button');
+                    if (button) {
+                        button.textContent = 'Изменить тип магазина';
+                    }
+                }
             }
         }
 
@@ -898,8 +935,18 @@
             const downgradeInfo = document.getElementById('downgradeInfo');
             downgradeInfo.style.display = 'none';
             
+            // Сбрасываем текст кнопок на исходный
+            resetButtonTexts();
+            
             // Не меняем подсветку текущего тарифа - оставляем как есть
             // Пользователь просто отменяет выбор нового тарифа
+        }
+
+        function resetButtonTexts() {
+            // Сбрасываем текст всех кнопок на исходный
+            document.querySelectorAll('.select-button').forEach(button => {
+                button.textContent = 'Выбрать тариф';
+            });
         }
 
         function closeProductionWarning() {
