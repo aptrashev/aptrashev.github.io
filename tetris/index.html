@@ -705,15 +705,22 @@
             
             // Проверяем, не является ли этот тариф уже активным
             if (card && card.classList.contains('selected')) {
-                // Если тариф уже активен, показываем соответствующее сообщение
-                isAlreadyActiveTariff = true;
-                const modal = document.getElementById('successModal');
-                const modalMessage = document.getElementById('modalMessage');
-                const confirmButton = document.getElementById('confirmButton');
-                modalMessage.textContent = `Тариф "${tariffName}" уже является вашим актуальным тарифом.`;
-                confirmButton.textContent = 'ОК';
-                modal.classList.add('show');
-                return;
+                // Если тариф уже активен, проверяем нужен ли выбор типа магазина
+                if (tariffId === 'starter' || tariffId === 'shop' || tariffId === 'production') {
+                    // Для тарифов с выбором типа магазина показываем модальное окно выбора типа
+                    showShopTypeModal(tariffId, tariffName);
+                    return;
+                } else {
+                    // Для других тарифов показываем сообщение о том, что тариф уже активен
+                    isAlreadyActiveTariff = true;
+                    const modal = document.getElementById('successModal');
+                    const modalMessage = document.getElementById('modalMessage');
+                    const confirmButton = document.getElementById('confirmButton');
+                    modalMessage.textContent = `Тариф "${tariffName}" уже является вашим актуальным тарифом.`;
+                    confirmButton.textContent = 'ОК';
+                    modal.classList.add('show');
+                    return;
+                }
             }
             
             // Сбрасываем флаг для нового выбора
