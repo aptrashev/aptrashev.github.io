@@ -926,20 +926,31 @@
             const modal = document.getElementById('successModal');
             modal.classList.remove('show');
             
-            // Убираем блокировку со всех карточек при отмене
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.remove('blocked');
-            });
-            
-            // Скрываем блок с информацией о переходе
-            const downgradeInfo = document.getElementById('downgradeInfo');
-            downgradeInfo.style.display = 'none';
-            
-            // Сбрасываем текст кнопок на исходный
-            resetButtonTexts();
-            
-            // Не меняем подсветку текущего тарифа - оставляем как есть
-            // Пользователь просто отменяет выбор нового тарифа
+            // Проверяем, есть ли активный тариф (выбранный ранее)
+            const activeCard = document.querySelector('.card.selected');
+            if (activeCard) {
+                const activeTariff = activeCard.getAttribute('data-tariff');
+                // Если есть активный тариф, восстанавливаем блокировку
+                if (activeTariff && activeTariff !== 'private') {
+                    blockOtherTariffs(activeTariff);
+                } else {
+                    // Если активен тариф "Торговец", убираем блокировку
+                    document.querySelectorAll('.card').forEach(card => {
+                        card.classList.remove('blocked');
+                    });
+                    const downgradeInfo = document.getElementById('downgradeInfo');
+                    downgradeInfo.style.display = 'none';
+                    resetButtonTexts();
+                }
+            } else {
+                // Если нет активного тарифа, убираем блокировку
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.remove('blocked');
+                });
+                const downgradeInfo = document.getElementById('downgradeInfo');
+                downgradeInfo.style.display = 'none';
+                resetButtonTexts();
+            }
         }
 
         function resetButtonTexts() {
