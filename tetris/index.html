@@ -91,6 +91,27 @@
             white-space: nowrap;
         }
 
+        .card.blocked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .card.blocked::after {
+            content: "ЗАБЛОКИРОВАНО";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
         .card.selected::before {
             content: "ВАШ АКТУАЛЬНЫЙ ТАРИФ";
             position: absolute;
@@ -540,7 +561,7 @@
                 <div class="card-header">
                     <h2 class="card-title">Магазин</h2>
                     <div class="card-price shop">Комиссия 5%</div>
-                    <div class="card-description">Для розницы, мастерских и производств</div>
+                    <div class="card-description">Для розницы и мастерских</div>
                 </div>
                 
                 
@@ -643,13 +664,6 @@
 
         </div>
         
-        <div class="commission-explanation">
-            <p>Комиссия зависит от типа бизнеса:</p>
-            <ul>
-                <li>5% — для розничных магазинов и мастерских</li>
-                <li>10% — для литейных мастерских и студий 3D-печати</li>
-            </ul>
-        </div>
     </div>
 
     <!-- Shop Type Selection Modal -->
@@ -711,22 +725,22 @@
         let selectedTariff = null;
 
         function selectTariff(tariffId, tariffName) {
+            // Проверяем, не заблокирован ли тариф
+            const card = document.querySelector(`[data-tariff="${tariffId}"]`);
+            if (card && card.classList.contains('blocked')) {
+                return; // Не позволяем выбрать заблокированный тариф
+            }
+            
             selectedTariff = tariffId;
             
             // Убираем подсветку рекомендуемого тарифа только при подтверждении выбора
             // Здесь не убираем, чтобы сохранить рекомендацию до подтверждения
             
-            // Если выбран тариф "Магазин" или "Лавка", показываем модальное окно выбора типа
-            if (tariffId === 'shop' || tariffId === 'starter') {
-                const shopTypeModal = document.getElementById('shopTypeModal');
-                shopTypeModal.classList.add('show');
-            } else {
-                // Для других тарифов показываем обычное success modal
-                const modal = document.getElementById('successModal');
-                const modalMessage = document.getElementById('modalMessage');
-                modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Подтвердите выбор или отмените.`;
-                modal.classList.add('show');
-            }
+            // Показываем success modal для всех тарифов
+            const modal = document.getElementById('successModal');
+            const modalMessage = document.getElementById('modalMessage');
+            modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Подтвердите выбор или отмените.`;
+            modal.classList.add('show');
         }
 
         function selectShopType(shopType, shopTypeName, commission) {
@@ -769,12 +783,54 @@
                 if (selectedCard) {
                     selectedCard.classList.add('selected');
                 }
+                
+                // Блокируем другие тарифы согласно правилам
+                blockOtherTariffs(selectedTariff);
+            }
+        }
+
+        function blockOtherTariffs(activeTariff) {
+            // Убираем блокировку со всех карточек
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('blocked');
+            });
+            
+            // Применяем правила блокировки
+            if (activeTariff === 'starter') {
+                // Если выбран тариф "Лавка", блокируем все кроме "Магазин"
+                document.querySelectorAll('.card').forEach(card => {
+                    const tariffId = card.getAttribute('data-tariff');
+                    if (tariffId !== 'starter' && tariffId !== 'shop') {
+                        card.classList.add('blocked');
+                    }
+                });
+            } else if (activeTariff === 'shop') {
+                // Если выбран тариф "Магазин", блокируем все остальные
+                document.querySelectorAll('.card').forEach(card => {
+                    const tariffId = card.getAttribute('data-tariff');
+                    if (tariffId !== 'shop') {
+                        card.classList.add('blocked');
+                    }
+                });
+            } else if (activeTariff === 'production') {
+                // Если выбран тариф "Производство", блокируем все остальные
+                document.querySelectorAll('.card').forEach(card => {
+                    const tariffId = card.getAttribute('data-tariff');
+                    if (tariffId !== 'production') {
+                        card.classList.add('blocked');
+                    }
+                });
             }
         }
 
         function cancelSelection() {
             const modal = document.getElementById('successModal');
             modal.classList.remove('show');
+            
+            // Убираем блокировку со всех карточек при отмене
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('blocked');
+            });
             
             // Не меняем подсветку текущего тарифа - оставляем как есть
             // Пользователь просто отменяет выбор нового тарифа
