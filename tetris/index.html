@@ -97,20 +97,6 @@
             pointer-events: none;
         }
 
-        .card.blocked::after {
-            content: "ЗАБЛОКИРОВАНО";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(231, 76, 60, 0.9);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            z-index: 10;
-        }
 
         .card.selected::before {
             content: "ВАШ АКТУАЛЬНЫЙ ТАРИФ";
@@ -133,14 +119,14 @@
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin-bottom: 8px;
             color: #333333;
         }
 
         .card-price {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 8px;
         }
@@ -381,6 +367,32 @@
             content: "• ";
             color: #2ECC71;
             font-weight: bold;
+        }
+
+        .downgrade-info {
+            margin-top: 2rem;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #CCCCCC;
+            text-align: center;
+        }
+
+        .downgrade-info p {
+            font-size: 0.9rem;
+            color: #666666;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .downgrade-info a {
+            color: #2ECC71;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .downgrade-info a:hover {
+            text-decoration: underline;
         }
 
         .shop-type-options {
@@ -664,6 +676,10 @@
 
         </div>
         
+        <div class="downgrade-info" id="downgradeInfo" style="display: none;">
+            <p>Для перехода на обычный аккаунт, напишите пожалуйста нам на адрес <a href="mailto:admin@minifreemarket.com">admin@minifreemarket.com</a></p>
+        </div>
+        
     </div>
 
     <!-- Shop Type Selection Modal -->
@@ -672,16 +688,8 @@
             <h2 class="modal-title">Выберите тип магазина</h2>
             <p class="modal-message">Укажите тип вашего бизнеса для определения комиссии:</p>
             
-            <div class="shop-type-options">
-                <div class="shop-type-option" onclick="selectShopType('retail', 'Розничный магазин', '5%')">
-                    <div class="shop-type-title">🏪 Розничный магазин</div>
-                    <div class="shop-type-description">Продажа готовых товаров</div>
-                </div>
-                
-                <div class="shop-type-option" onclick="selectShopType('production', 'Литейная или 3D студия', '10%')">
-                    <div class="shop-type-title">🏭 Литейная или 3D студия</div>
-                    <div class="shop-type-description">Производство и изготовление</div>
-                </div>
+            <div class="shop-type-options" id="shopTypeOptions">
+                <!-- Опции будут добавлены динамически -->
             </div>
             
             <button class="cancel-button" onclick="closeShopTypeModal()">Отмена</button>
@@ -736,30 +744,74 @@
             // Убираем подсветку рекомендуемого тарифа только при подтверждении выбора
             // Здесь не убираем, чтобы сохранить рекомендацию до подтверждения
             
-            // Показываем success modal для всех тарифов
-            const modal = document.getElementById('successModal');
-            const modalMessage = document.getElementById('modalMessage');
-            modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Подтвердите выбор или отмените.`;
-            modal.classList.add('show');
+            // Если выбран тариф "Лавка", "Магазин" или "Производство", показываем модальное окно выбора типа
+            if (tariffId === 'starter' || tariffId === 'shop' || tariffId === 'production') {
+                showShopTypeModal(tariffId, tariffName);
+            } else {
+                // Для других тарифов показываем обычное success modal
+                const modal = document.getElementById('successModal');
+                const modalMessage = document.getElementById('modalMessage');
+                modalMessage.textContent = `Вы успешно выбрали тариф "${tariffName}". Подтвердите выбор или отмените.`;
+                modal.classList.add('show');
+            }
+        }
+
+        function showShopTypeModal(tariffId, tariffName) {
+            const shopTypeOptions = document.getElementById('shopTypeOptions');
+            shopTypeOptions.innerHTML = '';
+            
+            if (tariffId === 'starter' || tariffId === 'shop') {
+                // Опции для тарифов "Лавка" и "Магазин"
+                const options = [
+                    { id: 'retail', title: '🏪 Розничный магазин', description: 'Продажа готовых товаров', commission: '5%' },
+                    { id: 'author', title: '🎨 Мастерская авторских миниатюр', description: 'Создание уникальных моделей', commission: '5%' },
+                    { id: 'accessories', title: '🔧 Мастерская аксессуаров', description: 'Изготовление игровых аксессуаров', commission: '5%' }
+                ];
+                
+                options.forEach(option => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'shop-type-option';
+                    optionElement.onclick = () => selectShopType(option.id, option.title.replace(/^[^\s]+ /, ''), option.commission);
+                    optionElement.innerHTML = `
+                        <div class="shop-type-title">${option.title}</div>
+                        <div class="shop-type-description">${option.description}</div>
+                    `;
+                    shopTypeOptions.appendChild(optionElement);
+                });
+            } else if (tariffId === 'production') {
+                // Опции для тарифа "Производство"
+                const options = [
+                    { id: 'foundry', title: '🏭 Литейная студия', description: 'Производство металлических миниатюр', commission: '10%' },
+                    { id: '3d', title: '🖨️ Студия 3D печати', description: 'Печать пластиковых моделей', commission: '10%' }
+                ];
+                
+                options.forEach(option => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'shop-type-option';
+                    optionElement.onclick = () => selectShopType(option.id, option.title.replace(/^[^\s]+ /, ''), option.commission);
+                    optionElement.innerHTML = `
+                        <div class="shop-type-title">${option.title}</div>
+                        <div class="shop-type-description">${option.description}</div>
+                    `;
+                    shopTypeOptions.appendChild(optionElement);
+                });
+            }
+            
+            // Показываем модальное окно
+            const shopTypeModal = document.getElementById('shopTypeModal');
+            shopTypeModal.classList.add('show');
         }
 
         function selectShopType(shopType, shopTypeName, commission) {
             // Закрываем модальное окно выбора типа магазина
             closeShopTypeModal();
             
-            // Проверяем, если выбран тариф "Лавка" и тип "Литейная или 3D студия"
-            if (selectedTariff === 'starter' && shopType === 'production') {
-                // Показываем специальное модальное окно с предупреждением
-                const modal = document.getElementById('productionWarningModal');
-                modal.classList.add('show');
-            } else {
-                // Показываем обычный success modal
-                const modal = document.getElementById('successModal');
-                const modalMessage = document.getElementById('modalMessage');
-                const tariffName = selectedTariff === 'starter' ? 'Лавка' : 'Магазин';
-                modalMessage.textContent = `Вы выбрали тариф "${tariffName}" (${shopTypeName}). Подтвердите выбор или отмените.`;
-                modal.classList.add('show');
-            }
+            // Показываем обычный success modal
+            const modal = document.getElementById('successModal');
+            const modalMessage = document.getElementById('modalMessage');
+            const tariffName = selectedTariff === 'starter' ? 'Лавка' : selectedTariff === 'shop' ? 'Магазин' : 'Производство';
+            modalMessage.textContent = `Вы выбрали тариф "${tariffName}" (${shopTypeName}). Подтвердите выбор или отмените.`;
+            modal.classList.add('show');
         }
 
         function closeShopTypeModal() {
@@ -795,6 +847,10 @@
                 card.classList.remove('blocked');
             });
             
+            // Скрываем блок с информацией о переходе
+            const downgradeInfo = document.getElementById('downgradeInfo');
+            downgradeInfo.style.display = 'none';
+            
             // Применяем правила блокировки
             if (activeTariff === 'starter') {
                 // Если выбран тариф "Лавка", блокируем все кроме "Магазин"
@@ -804,6 +860,8 @@
                         card.classList.add('blocked');
                     }
                 });
+                // Показываем информацию о переходе
+                downgradeInfo.style.display = 'block';
             } else if (activeTariff === 'shop') {
                 // Если выбран тариф "Магазин", блокируем все остальные
                 document.querySelectorAll('.card').forEach(card => {
@@ -812,6 +870,8 @@
                         card.classList.add('blocked');
                     }
                 });
+                // Показываем информацию о переходе
+                downgradeInfo.style.display = 'block';
             } else if (activeTariff === 'production') {
                 // Если выбран тариф "Производство", блокируем все остальные
                 document.querySelectorAll('.card').forEach(card => {
@@ -820,6 +880,8 @@
                         card.classList.add('blocked');
                     }
                 });
+                // Показываем информацию о переходе
+                downgradeInfo.style.display = 'block';
             }
         }
 
@@ -831,6 +893,10 @@
             document.querySelectorAll('.card').forEach(card => {
                 card.classList.remove('blocked');
             });
+            
+            // Скрываем блок с информацией о переходе
+            const downgradeInfo = document.getElementById('downgradeInfo');
+            downgradeInfo.style.display = 'none';
             
             // Не меняем подсветку текущего тарифа - оставляем как есть
             // Пользователь просто отменяет выбор нового тарифа
